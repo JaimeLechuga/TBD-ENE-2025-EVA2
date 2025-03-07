@@ -1,0 +1,281 @@
+﻿EVA2_1_Foreign_Key
+ Last login: Tue Mar  4 16:14:29 on ttys007
+lechus@MacBook-Air-de-Lechus ~ % create table banco(
+    -> bancoid int key auto_increment,
+    -> nombre varchar(50));
+zsh: parse error near `)'
+lechus@MacBook-Air-de-Lechus ~ % mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 36
+Server version: 8.0.27 MySQL Community Server - GPL
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+mysql> create table banco(
+    ->     -> bancoid int key auto_increment,
+    ->     -> nombre varchar(50));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> bancoid int key auto_increment,
+    -> nombre varchar(50))' at line 2
+mysql> use Tables_in_t2;
+Database changed
+mysql> create table banco(
+    ->     -> bancoid int key auto_increment,
+    ->     -> nombre varchar(50));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> bancoid int key auto_increment,
+    -> nombre varchar(50))' at line 2
+mysql> show tables;
+Empty set (0.01 sec)
+mysql> create table banco(
+    -> bancoid int key auto_increment,
+    -> nombre varchar(50);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql> create table banco( bancoid int key auto_increment, nombre varchar(50));
+Query OK, 0 rows affected (0.07 sec)
+mysql> mysql> insert into banco values(1, "City");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mysql> insert into banco values(1, "City")' at line 1
+mysql> mysql> insert into banco value("City");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mysql> insert into banco value("City")' at line 1
+mysql> show tables;
++------------------------+
+| Tables_in_tables_in_t2 |
++------------------------+
+| banco                  |
++------------------------+
+1 row in set (0.01 sec)
+mysql> insert into banco
+    -> values(1, "City");
+Query OK, 1 row affected (0.02 sec)
+mysql> insert into banco values(2, "Scotiabank");
+Query OK, 1 row affected (0.00 sec)
+mysql> insert into banco values(3, "HSBC");
+Query OK, 1 row affected (0.00 sec)
+mysql> insert into banco values(4, "Santander");
+Query OK, 1 row affected (0.01 sec)
+mysql> create table tarjetta(
+    ->     -> tarjetaid int key auto_increment,
+    ->     -> nombre varchar(50));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> tarjetaid int key auto_increment,
+    -> nombre varchar(50))' at line 2
+mysql> create table tarjeta(
+    -> tarjetaid int key auto_increment,
+    -> nombre varchar(50));
+Query OK, 0 rows affected (0.03 sec)
+mysql> insert into tarjetta
+    ->     -> values(1, "Mastercard");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> values(1, "Mastercard")' at line 2
+mysql> insert into tarjeta
+    -> values(1, "Mastercard");
+Query OK, 1 row affected (0.00 sec)
+mysql> insert into tarjeta values (2, "Visa");
+Query OK, 1 row affected (0.00 sec)
+mysql> create table tarjetacliente(
+    ->     -> clienteid int key auto_increment,
+    ->     -> bancoid int key auto_increment,
+    ->     -> tarjeta id int key auto_increment);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> clienteid int key auto_increment,
+    -> bancoid int key auto_increment,
+    ' at line 2
+mysql> create table tarjetacliente(
+    -> prueba int not null);
+Query OK, 0 rows affected (0.02 sec)
+mysql> alter table tarjetacliente add clienteid int key auto_increment;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> alter table tarjetacliente drop column prueba;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> alter table tarjetacliente add bancoid int key auto_increment;
+ERROR 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key
+mysql> alter table tarjetacliente add bancoid int not null;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> alter table tarjetacliente add tarjetaid int not null;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> insert into tarjetacliente(clienteid, bancoid, tarjetaid) value(2,2,2);
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from tarjetacliente;
++-----------+---------+-----------+
+| clienteid | bancoid | tarjetaid |
++-----------+---------+-----------+
+|         2 |       2 |         2 |
++-----------+---------+-----------+
+1 row in set (0.00 sec)
+mysql> alter table tarjetacliente add tarjetaclID int not null first;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> insert into tarjetacliente(tarjetaclID, clienteid, bancoid, tarjetaid) value(3,1,1,1);
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from tarjetacliente;
++-------------+-----------+---------+-----------+
+| tarjetaclID | clienteid | bancoid | tarjetaid |
++-------------+-----------+---------+-----------+
+|           3 |         1 |       1 |         1 |
+|           0 |         2 |       2 |         2 |
++-------------+-----------+---------+-----------+
+2 rows in set (0.00 sec)
+mysql> UPDATE tarjetacliente
+    ->     -> SET tarjetaclID = 4
+    ->     -> WHERE tarjetaclID = 0;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> SET tarjetaclID = 4
+    -> WHERE tarjetaclID = 0' at line 2
+mysql> update tarjetacliente
+    -> set tarjetaclID = 4
+    -> where tarjetaclID = 0;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+mysql> alter table foreign key(banoid)
+    -> references banco(bancoID)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'foreign key(banoid)
+references banco(bancoID)' at line 1
+mysql> alter table tarjetacliente
+    -> add foreign key(bancoid)
+    -> references banco(bancoid)
+    -> ;
+Query OK, 2 rows affected (0.11 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+mysql> select * from banco;
++---------+------------+
+| bancoid | nombre     |
++---------+------------+
+|       1 | City       |
+|       2 | Scotiabank |
+|       3 | HSBC       |
+|       4 | Santander  |
++---------+------------+
+4 rows in set (0.01 sec)
+mysql> select * from mastercard;
+ERROR 1146 (42S02): Table 'tables_in_t2.mastercard' doesn't exist
+mysql> show tables;
++------------------------+
+| Tables_in_tables_in_t2 |
++------------------------+
+| banco                  |
+| tarjeta                |
+| tarjetacliente         |
++------------------------+
+3 rows in set (0.02 sec)
+mysql> select * from tarjeta;
++-----------+------------+
+| tarjetaid | nombre     |
++-----------+------------+
+|         1 | Mastercard |
+|         2 | Visa       |
++-----------+------------+
+2 rows in set (0.00 sec)
+mysql>  show tables;
++------------------------+
+| Tables_in_tables_in_t2 |
++------------------------+
+| banco                  |
+| tarjeta                |
+| tarjetacliente         |
++------------------------+
+3 rows in set (0.10 sec)
+mysql> desc tarjetacliente
+    -> ;
++-------------+------+------+-----+---------+----------------+
+| Field       | Type | Null | Key | Default | Extra          |
++-------------+------+------+-----+---------+----------------+
+| tarjetaclID | int  | NO   |     | NULL    |                |
+| clienteid   | int  | NO   | PRI | NULL    | auto_increment |
+| bancoid     | int  | NO   | MUL | NULL    |                |
+| tarjetaid   | int  | NO   |     | NULL    |                |
++-------------+------+------+-----+---------+----------------+
+4 rows in set (0.03 sec)
+mysql> alter table tarjetacliente
+    -> add foreigh key(bancoid)
+    -> references banco(bancoid);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(bancoid)
+references banco(bancoid)' at line 2
+mysql> show tables;
++------------------------+
+| Tables_in_tables_in_t2 |
++------------------------+
+| banco                  |
+| tarjeta                |
+| tarjetacliente         |
++------------------------+
+3 rows in set (0.01 sec)
+mysql> create table direccioncliente(
+    -> direccionclid int not null aunto_increment,
+    -> calle varchar(50) not null,
+    -> numero int not null,
+    -> colonia varchar(50) not null,
+    -> cp int not null,
+    -> ciudad varchar(50) not null,
+    -> estado varchar(50) not null,
+    -> clienteid int not null,
+    -> foreigh key(clienteid)
+    -> ,
+    -> ^C
+mysql> create table direccioncliente(
+    -> direccionclid int not null aunto_increment,
+    -> calle varchar(50) not null,
+    -> numero int not null,
+    -> colonia varchar(50) not null,
+    -> cp int not null,
+    -> ciudad varchar(50) not null,
+    -> estado varchar(50) not null,
+    -> clienteid int not null,
+    -> foreigh key(clienteid)
+    -> references cliente(clienteid));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'aunto_increment,
+calle varchar(50) not null,
+numero int not null,
+colonia varcha' at line 2
+mysql> create table direccioncliente( direccionclid int not null key auto_increment, calle varchar(50) not null, numero int not null, colonia varchar(50) not null,
+lienteid int not null, foreigh key(clienteid) references cliente(clienteid));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(clienteid) references cliente(clienteid))' at line 1
+mysql> create table direccioncliente( direccionclid int not null key auto_increment, calle varchar(50) not null, numero int not null, colonia varchar(50) not null, cp int not null, ciudad varchar(50) not null, estado varchar(50) not null, clientid int not null, foreign key(clienteid) references cliente(clienteid));
+ERROR 1072 (42000): Key column 'clienteid' doesn't exist in table
+mysql> create table cliente(
+    -> clienteid int not null key auto:ncrement,
+    -> nombre varchar(50) not null,
+    -> apellidos varchar(50) not null);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'auto:ncrement,
+nombre varchar(50) not null,
+apellidos varchar(50) not null)' at line 2
+mysql> create table cliente(
+    -> ^C
+mysql> create table cliente( clienteid int not null key auto_increment, nombre varchar(50) not null, apellidos varchar(50) not null);
+Query OK, 0 rows affected (0.11 sec)
+mysql> Query OK, 0 rows affected (0.0089 sec)
+    ->  MySQL  localhost  tbd_eva2  SQL > insert into cliente(nombre, apellidos) 
+    ->                                 -> values("Juan","Perez"),("Pedro","Páramo"),
+    ->                                 -> ("Ruben","Hernandez"),("Otro","Cliente");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Query OK, 0 rows affected (0.0089 sec)
+ MySQL  localhost  tbd_eva2  SQL > insert' at line 1
+mysql> create table cliente( clienteid int not null key auto_increment, nombre varchar(50) not null, apellidos varchar(50) not null);
+ERROR 1050 (42S01): Table 'cliente' already exists
+mysql> show tables;
++------------------------+
+| Tables_in_tables_in_t2 |
++------------------------+
+| banco                  |
+| cliente                |
+| tarjeta                |
+| tarjetacliente         |
++------------------------+
+4 rows in set (0.04 sec)
+mysql> desc cliente;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| clienteid | int         | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(50) | NO   |     | NULL    |                |
+| apellidos | varchar(50) | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+mysql> select * from cliente;
+Empty set (0.01 sec)
+mysql> insert into cliente(nombre, apellidos)
+    -> values("Juan","Perez"),("Pedro","Paramo"),
+    -> ("Ruben","Hernandez"),("Otro","Cliente");
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+mysql>
