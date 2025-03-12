@@ -1,0 +1,347 @@
+﻿EVA2_6_SELECT
+Last login: Thu Mar  6 23:03:14 on ttys000
+lechus@MacBook-Air-de-Lechus ~ % mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 40
+Server version: 8.0.27 MySQL Community Server - GPL
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+mysql> 
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| employees          |
+| information_schema |
+| mysql              |
+| ordersbd           |
+| performance_schema |
+| sakila             |
+| sys                |
+| Tables_in_t2       |
+| tbd_eva1           |
+| world_x            |
++--------------------+
+10 rows in set (0.03 sec)
+mysql> use Tables_in_t2;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+mysql> select * from venta
+    -> ;
++---------+-------------+-----------+
+| ventaid | fecha_venta | clienteid |
++---------+-------------+-----------+
+|       2 | 2025-11-04  |         5 |
+|       4 | 2025-05-12  |         3 |
++---------+-------------+-----------+
+2 rows in set (0.01 sec)
+mysql> select * from venta_detalle;
++----------------+---------+------------+----------+
+| ventadetalleid | ventaid | productoid | cantidad |
++----------------+---------+------------+----------+
+|              5 |       2 |          2 |        7 |
+|              7 |       4 |          2 |        5 |
++----------------+---------+------------+----------+
+2 rows in set (0.00 sec)
+mysql> select * from clientes;
+ERROR 1146 (42S02): Table 'tables_in_t2.clientes' doesn't exist
+mysql> select * from cliente;
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         3 | Ruben  | Hernandez |
+|         4 | Otro   | Cliente   |
+|         5 | Pedro  | Paramo    |
++-----------+--------+-----------+
+3 rows in set (0.00 sec)
+mysql> select * from cliente
+    -> where clienteid in (select clienteid from venta);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         3 | Ruben  | Hernandez |
+|         5 | Pedro  | Paramo    |
++-----------+--------+-----------+
+2 rows in set (0.00 sec)
+mysql> select * from cliente
+    -> where clienteid not in (
+    -> select clienteid from venta);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         4 | Otro   | Cliente   |
++-----------+--------+-----------+
+1 row in set (0.00 sec)
+mysql> desc venta;
++-------------+------+------+-----+---------+----------------+
+| Field       | Type | Null | Key | Default | Extra          |
++-------------+------+------+-----+---------+----------------+
+| ventaid     | int  | NO   | PRI | NULL    | auto_increment |
+| fecha_venta | date | YES  |     | NULL    |                |
+| clienteid   | int  | NO   | MUL | NULL    |                |
++-------------+------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+mysql> insert into venta(fecha_venta, clienteid)
+    -> value("2025-01-02",3);
+Query OK, 1 row affected (0.01 sec)
+mysql> select * from venta;
++---------+-------------+-----------+
+| ventaid | fecha_venta | clienteid |
++---------+-------------+-----------+
+|       2 | 2025-11-04  |         5 |
+|       4 | 2025-05-12  |         3 |
+|       5 | 2025-01-02  |         3 |
++---------+-------------+-----------+
+3 rows in set (0.01 sec)
+mysql> select * from cliente where clienteid not in ( select clienteid from venta);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         4 | Otro   | Cliente   |
++-----------+--------+-----------+
+1 row in set (0.01 sec)
+mysql> select clienteid from venta;
++-----------+
+| clienteid |
++-----------+
+|         3 |
+|         3 |
+|         5 |
++-----------+
+3 rows in set (0.00 sec)
+mysql> select * from cliente where clienteid in (select clienteid from venta);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         3 | Ruben  | Hernandez |
+|         5 | Pedro  | Paramo    |
++-----------+--------+-----------+
+2 rows in set (0.00 sec)
+mysql> select distinc clienteid from venta;
+ERROR 1054 (42S22): Unknown column 'distinc' in 'field list'
+mysql> select disctinct clienteid from venta;
+ERROR 1054 (42S22): Unknown column 'disctinct' in 'field list'
+mysql> select distinct cliente id from venta;
+ERROR 1054 (42S22): Unknown column 'cliente' in 'field list'
+mysql> select distinct cliente id from venta;
+ERROR 1054 (42S22): Unknown column 'cliente' in 'field list'
+mysql> select * from cliente
+    -> where clienteid in (
+    -> select distinct clienteid from venta);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         3 | Ruben  | Hernandez |
+|         5 | Pedro  | Paramo    |
++-----------+--------+-----------+
+2 rows in set (0.00 sec)
+mysql> select * from venta_detalle;
++----------------+---------+------------+----------+
+| ventadetalleid | ventaid | productoid | cantidad |
++----------------+---------+------------+----------+
+|              5 |       2 |          2 |        7 |
+|              7 |       4 |          2 |        5 |
++----------------+---------+------------+----------+
+2 rows in set (0.00 sec)
+mysql> select * from producto;
++------------+---------+---------+--------+
+| productoid | nombre  | precio  | unidad |
++------------+---------+---------+--------+
+|          2 | Tablet  | 5000.45 | Pieza  |
+|          3 | Celular | 1000.50 | Pieza  |
++------------+---------+---------+--------+
+2 rows in set (0.00 sec)
+mysql> insert into venta_detalle(ventaid, productoid, cantidad)
+    -> value(5,3,10),(7,2,8);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`tables_in_t2`.`venta_detalle`, CONSTRAINT `venta_detalle_ibfk_1` FOREIGN KEY (`ventaid`) REFERENCES `venta` (`ventaid`) ON DELETE CASCADE ON UPDATE CASCADE)
+mysql> insert into venta_detalle(ventaid, productoid, cantidad) value(2,3,10),(4,2,8);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+mysql> select * from venta_detalle;
++----------------+---------+------------+----------+
+| ventadetalleid | ventaid | productoid | cantidad |
++----------------+---------+------------+----------+
+|              5 |       2 |          2 |        7 |
+|              7 |       4 |          2 |        5 |
+|             10 |       2 |          3 |       10 |
+|             11 |       4 |          2 |        8 |
++----------------+---------+------------+----------+
+4 rows in set (0.00 sec)
+mysql> select * from producto 
+    -> where productoid in (
+    -> select distinct productoid from venta_detalle);
++------------+---------+---------+--------+
+| productoid | nombre  | precio  | unidad |
++------------+---------+---------+--------+
+|          2 | Tablet  | 5000.45 | Pieza  |
+|          3 | Celular | 1000.50 | Pieza  |
++------------+---------+---------+--------+
+2 rows in set (0.00 sec)
+mysql> select * from producto where productoid not in ( select distinct producto
+id from venta_detalle);
+Empty set (0.00 sec)
+mysql> select * from tarjeta;
++-----------+------------+
+| tarjetaid | nombre     |
++-----------+------------+
+|         1 | Mastercard |
+|         2 | Visa       |
++-----------+------------+
+2 rows in set (0.00 sec)
+mysql> select * from tarjetacliente;
++-------------+-----------+---------+-----------+
+| tarjetaclID | clienteid | bancoid | tarjetaid |
++-------------+-----------+---------+-----------+
+|           3 |         1 |       1 |         1 |
+|           4 |         2 |       2 |         2 |
++-------------+-----------+---------+-----------+
+2 rows in set (0.00 sec)
+mysql> select * from cliente
+    -> where clienteid in (
+    -> select distinct clienteid from tarjetacliente);
+Empty set (0.00 sec)
+mysql> desc cliente;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| clienteid | int         | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(50) | NO   |     | NULL    |                |
+| apellidos | varchar(50) | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+mysql> insert into cliente
+    -> values(1,"juan","perez"),(2,"XXXX","YYYY");
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+mysql> select * from cliente where clienteid in ( select distinct clienteid from tarjetacliente);
++-----------+--------+-----------+
+| clienteid | nombre | apellidos |
++-----------+--------+-----------+
+|         1 | juan   | perez     |
+|         2 | XXXX   | YYYY      |
++-----------+--------+-----------+
+2 rows in set (0.00 sec)
+mysql> select * from banco;
++---------+------------+
+| bancoid | nombre     |
++---------+------------+
+|       1 | City       |
+|       2 | Scotiabank |
+|       3 | HSBC       |
+|       4 | Santander  |
++---------+------------+
+4 rows in set (0.01 sec)
+mysql> select * from banco;
++---------+------------+
+| bancoid | nombre     |
++---------+------------+
+|       1 | City       |
+|       2 | Scotiabank |
+|       3 | HSBC       |
+|       4 | Santander  |
++---------+------------+
+4 rows in set (0.00 sec)
+mysql> select * from banco
+    -> where bancoid in (
+    -> select distinct bancoid
+    -> from tarjetacliente);
++---------+------------+
+| bancoid | nombre     |
++---------+------------+
+|       1 | City       |
+|       2 | Scotiabank |
++---------+------------+
+2 rows in set (0.00 sec)
+mysql> use sakila;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+mysql> show tables;
++----------------------------+
+| Tables_in_sakila           |
++----------------------------+
+| actor                      |
+| actor_info                 |
+| address                    |
+| category                   |
+| city                       |
+| country                    |
+| customer                   |
+| customer_list              |
+| film                       |
+| film_actor                 |
+| film_category              |
+| film_list                  |
+| film_text                  |
+| inventory                  |
+| language                   |
+| nicer_but_slower_film_list |
+| payment                    |
+| rental                     |
+| sales_by_film_category     |
+| sales_by_store             |
+| staff                      |
+| staff_list                 |
+| store                      |
++----------------------------+
+23 rows in set (0.00 sec)
+mysql> desc payment;
++--------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| Field        | Type              | Null | Key | Default           | Extra                                         |
++--------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| payment_id   | smallint unsigned | NO   | PRI | NULL              | auto_increment                                |
+| customer_id  | smallint unsigned | NO   | MUL | NULL              |                                               |
+| staff_id     | tinyint unsigned  | NO   | MUL | NULL              |                                               |
+| rental_id    | int               | YES  | MUL | NULL              |                                               |
+| amount       | decimal(5,2)      | NO   |     | NULL              |                                               |
+| payment_date | datetime          | NO   |     | NULL              |                                               |
+| last_update  | timestamp         | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++--------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+7 rows in set (0.00 sec)
+mysql> select count(*) from payment;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+1 row in set (0.01 sec)
+mysql> select count(*) from customer;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+1 row in set (0.00 sec)
+mysql> desc customer;
++-------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| Field       | Type              | Null | Key | Default           | Extra                                         |
++-------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| customer_id | smallint unsigned | NO   | PRI | NULL              | auto_increment                                |
+| store_id    | tinyint unsigned  | NO   | MUL | NULL              |                                               |
+| first_name  | varchar(45)       | NO   |     | NULL              |                                               |
+| last_name   | varchar(45)       | NO   | MUL | NULL              |                                               |
+| email       | varchar(50)       | YES  |     | NULL              |                                               |
+| address_id  | smallint unsigned | NO   | MUL | NULL              |                                               |
+| active      | tinyint(1)        | NO   |     | 1                 |                                               |
+| create_date | datetime          | NO   |     | NULL              |                                               |
+| last_update | timestamp         | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++-------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+9 rows in set (0.01 sec)
+mysql> select customer_id, first_name, last_name
+    -> from customer 
+    -> where customer_id in (
+    -> select distinct customer_id
+    -> from payment);
+Empty set (0.01 sec)
+mysql> select insert into customer(first_name, last_name)
+    -> value(5,"Ruben", "Hernandez");
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'into customer(first_name, last_name)
+value(5,"Ruben", "Hernandez")' at line 1
+mysql> select customer_id, first_name, last_name from customer where customer_id in (select distinct customer_id from payment) order by last_name desc;
+Empty set (0.00 sec)
+mysql>
