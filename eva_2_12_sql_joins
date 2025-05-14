@@ -1,0 +1,83 @@
+lechus@MacBook-Air-de-Lechus ~ % mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+MySQL  localhost:3307 ssl  SQL > SELECT o.CustomerID, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS TotalGastado
+                               -> FROM Orders o
+                               -> JOIN OrderDetails od ON o.OrderID = od.OrderID
+                               -> GROUP BY o.CustomerID
+                               -> ORDER BY TotalGastado DESC
+                               -> LIMIT 1;
+ERROR: 1046 (3D000): No database selected
+ MySQL  localhost:3307 ssl  SQL >
+ MySQL  localhost:3307 ssl  SQL >  use northwind;
+Default schema set to `northwind`.
+Fetching global names, object names from `northwind` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3307 ssl  northwind  SQL > SELECT o.CustomerID, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS TotalGastado
+                                          -> FROM Orders o
+                                          -> JOIN OrderDetails od ON o.OrderID = od.OrderID
+                                          -> GROUP BY o.CustomerID
+                                          -> ORDER BY TotalGastado DESC
+                                          -> LIMIT 1;
++------------+--------------+
+| CustomerID | TotalGastado |
++------------+--------------+
+| QUICK      |    117483.39 |
++------------+--------------+
+1 row in set (0.0077 sec)
+ MySQL  localhost:3307 ssl  northwind  SQL > SELECT o.CustomerID, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS TotalGastado
+                                          -> FROM Orders o
+                                          -> JOIN OrderDetails od ON o.OrderID = od.OrderID
+                                          -> GROUP BY o.CustomerID
+                                          -> HAVING TotalGastado > 0
+                                          -> ORDER BY TotalGastado ASC
+                                          -> LIMIT 1;
++------------+--------------+
+| CustomerID | TotalGastado |
++------------+--------------+
+| CENTC      |        100.8 |
++------------+--------------+
+1 row in set (0.0159 sec)
+ MySQL  localhost:3307 ssl  northwind  SQL > SELECT p.ProductID, p.ProductName, SUM(od.Quantity) AS TotalVendidas
+                                          -> FROM OrderDetails od
+                                          -> JOIN Products p ON od.ProductID = p.ProductID
+                                          -> GROUP BY p.ProductID, p.ProductName
+                                          -> ORDER BY TotalVendidas DESC
+                                          -> LIMIT 1;
++-----------+-------------------+---------------+
+| ProductID | ProductName       | TotalVendidas |
++-----------+-------------------+---------------+
+|        60 | Camembert Pierrot |          1577 |
++-----------+-------------------+---------------+
+1 row in set (0.0075 sec)
+ MySQL  localhost:3307 ssl  northwind  SQL > SELECT p.ProductID, p.ProductName, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS Ganancia
+                                          -> FROM OrderDetails od
+                                          -> JOIN Products p ON od.ProductID = p.ProductID
+                                          -> GROUP BY p.ProductID, p.ProductName
+                                          -> ORDER BY Ganancia DESC
+                                          -> LIMIT 1;
++-----------+--------------+----------+
+| ProductID | ProductName  | Ganancia |
++-----------+--------------+----------+
+|        38 | Cte de Blaye | 149984.2 |
++-----------+--------------+----------+
+1 row in set (0.0085 sec)
+ MySQL  localhost:3307 ssl  northwind  SQL > SELECT p.ProductID, p.ProductName, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS Ganancia
+                                          -> FROM OrderDetails od
+                                          -> JOIN Products p ON od.ProductID = p.ProductID
+                                          -> GROUP BY p.ProductID, p.ProductName
+                                          -> HAVING Ganancia > 0
+                                          -> ORDER BY Ganancia ASC
+                                          -> LIMIT 1;
++-----------+-------------+----------+
+| ProductID | ProductName | Ganancia |
++-----------+-------------+----------+
+|        48 | Chocolade   |  1542.75 |
++-----------+-------------+----------+
+1 row in set (0.0072 sec)
+ MySQL  localhost:3307 ssl  northwind  SQL >
